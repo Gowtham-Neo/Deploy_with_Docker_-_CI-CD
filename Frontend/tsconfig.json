@@ -17,7 +17,7 @@
 
     /* Linting */
     "strict": true,
-    "types": ["cypress"],
+    "types": ["cypress", "node"],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
