@@ -76,7 +76,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'  # Ensure this matches the recommended version
+          node-version: '18'  
 
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
@@ -91,9 +91,14 @@ jobs:
           cd Frontend
           npm run build
 
-      - name: Deploy to Netlify
-        run: |
-          netlify deploy --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} --dir=./Frontend/dist --prod
+      - name: Deploy production to Netlify
+        uses: South-Paw/action-netlify-deploy@v1.2.0
+        with:
+          github-token: ${{ secrets.TOKEN }}
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
+          build-dir: 'Frontend/dist'
+          comment-on-commit: true
 
       - name: View deployment URL
         run: |
