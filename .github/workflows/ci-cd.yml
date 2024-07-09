@@ -93,7 +93,7 @@ jobs:
 
       - name: Deploy to Netlify
         run: |
-          netlify deploy --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} --dir=./Frontend/dist
+          netlify deploy --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} --dir=./Frontend/dist --prod
 
       - name: View deployment URL
         run: |
