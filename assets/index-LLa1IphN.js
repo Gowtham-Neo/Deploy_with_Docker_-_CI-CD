@@ -1,0 +1,1 @@
+import{r as e,j as t,N as o}from"./index-Du-mbmiG.js";const a=()=>(e.useEffect(()=>{localStorage.removeItem("auth_token"),localStorage.removeItem("user"),localStorage.removeItem("selectedSports"),localStorage.removeItem("selectedTeams")},[]),t.jsx(o,{to:"/signin"}));export{a as default};
