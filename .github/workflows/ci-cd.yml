@@ -102,8 +102,7 @@ jobs:
 
       - name: View deployment URL
         run: |
-          DEPLOY_URL=$(echo "${{ steps.deploy-netlify.outputs.stdout }}" | jq -r '.deploy_url')
-          echo "Deployed URL: $DEPLOY_URL"
+           netlify open:site
 
       - name: Notify deployment status
         run: |
