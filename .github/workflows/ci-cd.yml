@@ -76,7 +76,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 'latest'  # Ensure this matches the recommended version
+          node-version: '18'  # Ensure this matches the recommended version
 
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
