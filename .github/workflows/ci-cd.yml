@@ -92,49 +92,47 @@ jobs:
           git push --force --quiet "https://${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git" master:gh-pages
   notify:
     runs-on: ubuntu-latest
-    needs: [build, test, deploy]
+    needs: [build,test,deploy]
 
     steps:
-      - name: Notify on failure
-        if: failure()
+      - name: Notify on outcome
         run: |
-          SLACK_MESSAGE=$(cat <<EOF
-          {
-            "channel": "#sports-center",
-            "text": "Build, test, or deploy failed for ${{ github.repository }} on ${{ github.ref }}. Check the logs for more details.",
-            "attachments": [
-              {
-                "color": "danger",
-                "text": "Error in ${{ job.status }}: ${{ steps.build.outputs.error }}",
-                "fields": [
-                  {
-                    "title": "Job",
-                    "value": "${{ github.job }}"
-                  },
-                  {
-                    "title": "Ref",
-                    "value": "${{ github.ref }}"
-                  },
-                  {
-                    "title": "Repository",
-                    "value": "${{ github.repository }}"
-                  }
-                ]
-              }
-            ]
-          }
-          EOF
-          )
-          curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}"
+          if [ "${{ job.status }}" == "failure" ]; then
+            SLACK_MESSAGE=$(cat <<EOF
+            {
+              "channel": "#sports-center",
+              "text": "Build, test, or deploy failed for ${{ github.repository }} on ${{ github.ref }}. Check the logs for more details.",
+              "attachments": [
+                {
+                  "color": "danger",
+                  "text": "Error in job: ${{ job.status }}",
+                  "fields": [
+                    {
+                      "title": "Job",
+                      "value": "${{ github.job }}"
+                    },
+                    {
+                      "title": "Ref",
+                      "value": "${{ github.ref }}"
+                    },
+                    {
+                      "title": "Repository",
+                      "value": "${{ github.repository }}"
+                    }
+                  ]
+                }
+              ]
+            }
+            EOF
+            )
+          else
+            SLACK_MESSAGE=$(cat <<EOF
+            {
+              "channel": "#sports-center",
+              "text": "Build, test, and deploy succeeded for ${{ github.repository }} on ${{ github.ref }}."
+            }
+            EOF
+            )
+          fi
 
-      - name: Notify on success
-        if: success()
-        run: |
-          SLACK_MESSAGE=$(cat <<EOF
-          {
-            "channel": "#your-channel",
-            "text": "Build, test, and deploy succeeded for ${{ github.repository }} on ${{ github.ref }}."
-          }
-          EOF
-          )
           curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}"
