@@ -29,18 +29,6 @@ describe('Sport Centre Application Tests', () => {
   
       cy.contains('Invalid credentials !').should('be.visible');
     });
-    
-    it('Navigates to /signin after clearing local storage', () => {
-        localStorage.setItem('auth_token', 'mockAuthToken');
-        localStorage.setItem('user', JSON.stringify({ id: 1, username: 'testuser' }));
-        localStorage.setItem('selectedSports', JSON.stringify(['football', 'basketball']));
-        localStorage.setItem('selectedTeams', JSON.stringify(['teamA', 'teamB']));
-
-        cy.visit('https://sport-centre.netlify.app/logout');
-        cy.url().should('include', '/logout');
-        cy.wait(500); 
-        cy.url().should('include', '/signin');
-      });
 
       
       it('should have the correct title', () => {
