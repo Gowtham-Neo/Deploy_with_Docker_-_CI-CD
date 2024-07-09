@@ -17,11 +17,11 @@
 
     /* Linting */
     "strict": true,
-    "types": ["cypress"],
+    "types": ["cypress", "node"],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["cypress","src"],
+  "include": ["cypress/**/*.ts","src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
