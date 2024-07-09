@@ -1,0 +1,111 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Copy .env file to Frontend directory
+        run: cp .env Frontend/
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker images
+        run: |
+          docker-compose -f docker-compose.yml build
+          docker-compose -f docker-compose.yml push
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Copy .env file to Frontend directory
+        run: cp .env Frontend/
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd Frontend && npm install
+
+      - name: Run unit tests
+        run: cd Frontend && npm run test
+
+      - name: Run Cypress tests
+        run: |
+          cd Frontend
+          npm install cypress
+          npx cypress run
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Copy .env file to Backend and Frontend directories
+        run: |
+          cp .env Backend/
+          cp .env Frontend/
+
+      - name: Deploy to server
+        run: |
+          ssh user@yourserver "docker-compose -f /path/to/your/docker-compose.yml pull && docker-compose -f /path/to/your/docker-compose.yml up -d"
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build, test, deploy]
+
+    steps:
+      - name: Notify on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.15.0
+        with:
+          payload: |
+            {
+              "channel": "#your-channel",
+              "text": "Build, test, or deploy failed for ${{ github.repository }} on ${{ github.ref }}. Check the logs for more details."
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Notify on success
+        if: success()
+        uses: slackapi/slack-github-action@v1.15.0
+        with:
+          payload: |
+            {
+              "channel": "#your-channel",
+              "text": "Build, test, and deploy succeeded for ${{ github.repository }} on ${{ github.ref }}."
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
