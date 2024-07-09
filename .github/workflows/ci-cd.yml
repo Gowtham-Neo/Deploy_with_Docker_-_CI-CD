@@ -89,6 +89,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install dependencies
+        run: |
+          cd Frontend && npm install
+
+      - name: Build project
+        run: cd Frontend && npm run build
+        
+      - name: Upload production-ready build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: production-files
+          path: Frontend/dist
+          if-no-files-found: warn
+        
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
