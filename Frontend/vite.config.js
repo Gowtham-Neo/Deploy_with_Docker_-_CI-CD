@@ -6,5 +6,19 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   build: {
     outDir: 'dist'
-  }
+  },
+  plugins: [
+    react(),
+    VitePWA({
+      devOptions: {
+        enabled: true
+      },
+      registerType: 'autoUpdate',
+      manifest: {
+        name: "Sport-Center application",
+        short_name: "Sport Center",
+        theme_color: '#AAF',
+      },
+    }),
+  ],
 })
