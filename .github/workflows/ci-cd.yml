@@ -29,29 +29,11 @@ jobs:
         run: |
           cd Frontend
           npm install
-          npm install --save-dev @types/cypress
-
-      - name: Build project
-        run: cd Frontend && npm run build
-
-      - name: Rename files with invalid characters
-        run: |
-          find Frontend/dist -name '*:*' -exec bash -c 'mv "$1" "${1//:/_}"' -- {} \;
-
-      - name: Verify dist directory contents
-        run: ls -la Frontend/dist
 
       - name: Build and push Docker images
         run: |
           docker-compose -f docker-compose.yml build         
           docker-compose -f docker-compose.yml push
-
-      - name: Upload production-ready build files
-        uses: actions/upload-artifact@v2
-        with:
-          name: production-files
-          path: Frontend/dist
-          if-no-files-found: warn
 
   test:
     runs-on: ubuntu-latest
@@ -81,7 +63,6 @@ jobs:
 
   deploy:
     name: Deploy to Netlify
-    needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
@@ -89,12 +70,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Node.js
+      - name: Clear npm cache
+        run: npm cache clean --force
+
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'  # Adjust node version as per your project's requirement
+          node-version: '14'  # Ensure this matches the recommended version
 
-      - name: Install dependencies
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Install project dependencies
         run: |
           cd Frontend
           npm install
@@ -105,12 +92,11 @@ jobs:
           npm run build
 
       - name: Deploy to Netlify
-        id: deploy-netlify
         run: |
-          npm install netlify-cli -g
-          netlify deploy --auth "${{ secrets.NETLIFY_AUTH_TOKEN }}" --dir=./Frontend/dist --prod --json
+          npm install -g netlify-cli
+          netlify deploy --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} --dir=./Frontend/dist --prod --json
 
-      - name: Extract Deployment URL
+      - name: View deployment URL
         run: |
           DEPLOY_URL=$(echo "${{ steps.deploy-netlify.outputs.stdout }}" | jq -r '.deploy_url')
           echo "Deployed URL: $DEPLOY_URL"
