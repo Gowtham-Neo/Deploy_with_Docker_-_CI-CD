@@ -99,6 +99,9 @@ jobs:
           netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
           build-dir: 'Frontend/dist'
           comment-on-commit: true
+      - name: Link to Netlify Site
+        run: netlify link
+        working-directory: ./Frontend
 
       - name: View deployment URL
         run: |
