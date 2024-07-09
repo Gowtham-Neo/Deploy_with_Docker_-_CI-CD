@@ -103,6 +103,9 @@ jobs:
         with:
           github_token: ${{ secrets.TOKEN }}
           publish_dir: Frontend/dist
+          publish_branch: gh-pages # Specify the branch where GitHub Pages is hosted
+          force_orphan: true       # Force to initialize the branch as an orphan
+          cname: example.com
 
   notify:
     runs-on: ubuntu-latest
