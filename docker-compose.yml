@@ -4,6 +4,8 @@ services:
     build:
       context: ./Backend
       dockerfile: Dockerfile
+    
+    image: backend-image:latest
     volumes:
       - ./Backend:/app  
     ports:
@@ -16,6 +18,7 @@ services:
     build:
       context: ./Frontend
       dockerfile: Dockerfile
+    image: frontend-image:latest
     volumes:
       - ./Frontend:/app  
     ports:
