@@ -93,7 +93,7 @@ jobs:
 
       - name: Deploy to Netlify
         run: |
-          npm install -g netlify-cli
+          run: npm install -g netlify-cli@7.12.0
           netlify deploy --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} --dir=./Frontend/dist --prod --json
 
       - name: View deployment URL
