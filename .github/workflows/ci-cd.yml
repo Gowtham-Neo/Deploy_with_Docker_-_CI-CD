@@ -60,6 +60,38 @@ jobs:
           cd Frontend
           npm install cypress
           npx cypress run
+          
+      - name: Notify on failure
+        if: failure()
+        run: |
+          SLACK_MESSAGE=$(cat <<EOF
+          {
+            "channel": "#notification",
+            "text": "Build, test, or deploy failed for ${{ github.repository }} on ${{ github.ref }}. Check the logs for more details.",
+            "attachments": [
+              {
+                "color": "danger",
+                "text": "Error in ${{ job.status }}",
+                "fields": [
+                  {
+                    "title": "Job",
+                    "value": "${{ github.job }}"
+                  },
+                  {
+                    "title": "Ref",
+                    "value": "${{ github.ref }}"
+                  },
+                  {
+                    "title": "Repository",
+                    "value": "${{ github.repository }}"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          )
+          curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}"
 
   deploy:
     name: Deploy to Netlify
@@ -104,18 +136,14 @@ jobs:
       - name: Notify deployment status
         run: |
           echo "Deployment to Netlify completed."
+      
 
-  notify:
-    runs-on: ubuntu-latest
-    needs: [build, test, deploy]
-
-    steps:
       - name: Notify on failure
         if: failure()
         run: |
           SLACK_MESSAGE=$(cat <<EOF
           {
-            "channel": "#sports-center",
+            "channel": "#notification",
             "text": "Build, test, or deploy failed for ${{ github.repository }} on ${{ github.ref }}. Check the logs for more details.",
             "attachments": [
               {
@@ -141,15 +169,68 @@ jobs:
           EOF
           )
           curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}"
-
       - name: Notify on success
         if: success()
         run: |
           SLACK_MESSAGE=$(cat <<EOF
           {
-            "channel": "#sports-center",
+            "channel": "#notification",
             "text": "Build, test, and deploy succeeded for ${{ github.repository }} on ${{ github.ref }}."
           }
           EOF
           )
           curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}"
+  
+
+    
+
+      
+
+  # notify:
+  #   runs-on: ubuntu-latest
+  #   needs: [build, test, deploy]
+
+  #   steps:
+  #     - name: Notify on failure
+  #       if: failure()
+  #       run: |
+  #         SLACK_MESSAGE=$(cat <<EOF
+  #         {
+  #           "channel": "#notification",
+  #           "text": "Build, test, or deploy failed for ${{ github.repository }} on ${{ github.ref }}. Check the logs for more details.",
+  #           "attachments": [
+  #             {
+  #               "color": "danger",
+  #               "text": "Error in ${{ job.status }}",
+  #               "fields": [
+  #                 {
+  #                   "title": "Job",
+  #                   "value": "${{ github.job }}"
+  #                 },
+  #                 {
+  #                   "title": "Ref",
+  #                   "value": "${{ github.ref }}"
+  #                 },
+  #                 {
+  #                   "title": "Repository",
+  #                   "value": "${{ github.repository }}"
+  #                 }
+  #               ]
+  #             }
+  #           ]
+  #         }
+  #         EOF
+  #         )
+  #         curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}"
+
+  #     - name: Notify on success
+  #       if: success()
+  #       run: |
+  #         SLACK_MESSAGE=$(cat <<EOF
+  #         {
+  #           "channel": "#notification",
+  #           "text": "Build, test, and deploy succeeded for ${{ github.repository }} on ${{ github.ref }}."
+  #         }
+  #         EOF
+  #         )
+  #         curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}"
