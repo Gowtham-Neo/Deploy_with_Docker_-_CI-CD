@@ -8,8 +8,7 @@ services:
       - ./Backend:/app  
     ports:
       - "3000:3000"
-    env_file:
-      - .env 
+    
     depends_on:
       - db
 
@@ -21,8 +20,7 @@ services:
       - ./Frontend:/app  
     ports:
       - "5173:5173"
-    env_file:
-      - ./Frontend/.env 
+    
 
   db:
     image: postgres:latest
