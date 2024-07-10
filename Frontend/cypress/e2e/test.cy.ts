@@ -25,7 +25,7 @@ describe('Sport Centre Application Tests', () => {
       
       it('should have the correct title', () => {
         cy.visit('https://sport-centre.netlify.app/', { timeout: 50000 })
-        cy.title({ timeout: 10000 }).should('include', 'Sportdfisks');
+        cy.title({ timeout: 10000 }).should('include', 'Sports Center');
       });
 
 
