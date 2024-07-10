@@ -32,7 +32,7 @@ const Appbar = () => {
                   <img className="h-4 md:h-8" src={logo} alt="Sports-Logo" />
                 </div>
                 <a href="#" className="font-serif font-bold md:text-2xl">
-                  Sports Center
+                  Sports Center S
                 </a>
               </div>
               <div className="block">
