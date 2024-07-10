@@ -27,10 +27,8 @@ services:
 
   db:
     image: postgres:latest
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Gowtham.psql
-      POSTGRES_DB: Sports-center_development
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
