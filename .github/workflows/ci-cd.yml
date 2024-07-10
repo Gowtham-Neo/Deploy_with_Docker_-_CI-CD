@@ -117,8 +117,6 @@ jobs:
           cd Frontend
           npm install
 
-
-          
       - name: Build project
         run: |
           cd Frontend
