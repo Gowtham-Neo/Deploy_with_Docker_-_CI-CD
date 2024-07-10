@@ -61,7 +61,7 @@ const Appbar = () => {
                         href="/PlayersList"
                         className="text-gray-700 hover:text-black"
                       >
-                        Achivers
+                        Players
                       </a>
                     </div>
                   )}
