@@ -10,15 +10,15 @@ describe('Sport Centre Application Tests', () => {
         cy.url().should('include', '/');
     });
 
-    // it('Sign-in Successfull', () => {
-    //   cy.visit('https://sport-centre.netlify.app/signin', { timeout: 50000 })
+    it('Sign-in Successfull', () => {
+      cy.visit('https://sport-centre.netlify.app/signin', { timeout: 50000 })
 
-    //   cy.get('input[name="email"]').type('correct.user@example.com');
-    //   cy.get('input[name="password"]').type('user.password');
-    //   cy.get('form').submit();
+      cy.get('input[name="email"]').type('correct.user@example.com');
+      cy.get('input[name="password"]').type('user.password');
+      cy.get('form').submit();
   
-    //   cy.url().should('include', '/');
-    // });
+      cy.url().should('include', '/');
+    });
 
 
 

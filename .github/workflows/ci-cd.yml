@@ -62,6 +62,7 @@ jobs:
       - name: Notify on failure
         if: failure()
         run: |
+        
           SLACK_MESSAGE=$(cat <<EOF
           {
             "channel": "#notification",
