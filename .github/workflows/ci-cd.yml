@@ -172,6 +172,7 @@ jobs:
           EOF
           )
           curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}"
+      
       - name: Notify on success
         if: success()
         run: |
