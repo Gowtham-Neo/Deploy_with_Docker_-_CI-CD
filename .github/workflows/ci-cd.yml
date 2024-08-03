@@ -140,8 +140,7 @@ jobs:
       - name: Notify deployment status
         run: |
           echo "Deployment to Netlify completed."
-      
-
+    
       - name: Notify on failure
         if: failure()
         run: |
